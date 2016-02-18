@@ -1,6 +1,5 @@
 package redeMap;
 
-import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -8,12 +7,11 @@ public class FluxoMaxCustoMin {
 	
 	private Grafo g;
 	private SortedMap<Integer,SortedMap<Integer,Fluxo>> gResidual;
-	private Integer custo;
+	private double custo;
 	private long[] dt;
 	private Integer[] rot;
 	
 	BellmanFord bellman = new BellmanFord();
-	
 	
 	public FluxoMaxCustoMin(Grafo g, long[] dt, Integer[] rot) {
 		super();
@@ -24,12 +22,6 @@ public class FluxoMaxCustoMin {
 		this.setRot(rot);
 	}
 	
-	public Integer getCusto() {
-		return custo;
-	}
-	public void setCusto(Integer custo) {
-		this.custo = custo;
-	}
 	public Grafo getgResidual() {
 		return g;
 	}
@@ -105,13 +97,12 @@ public class FluxoMaxCustoMin {
 		while (bellman.menorCaminho(g.getNumVertices(), dt, rot, gResidual)) {
 			
 			aumentarFluxo();
-			System.err.println("Custo parcial - "+custo);
 			gerarRedeResidual();
-			
-			System.err.println("------------Novo Residual------------------");
-			for (Map<Integer,Fluxo> para : gResidual.values()) {
+			System.out.println("Custo Parcial = "+custo);
+			System.out.println("------------Novo Residual------------------");
+			for (SortedMap<Integer, Fluxo> para : gResidual.values()) {
 				for (Fluxo fluxo : para.values()) {
-					System.err.println(fluxo.toString());
+					System.out.println(fluxo.toString());
 				}
 			}
 		}

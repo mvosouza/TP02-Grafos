@@ -3,10 +3,6 @@ package redeMap;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -108,7 +104,7 @@ public class Grafo {
 			}
 		}
 		
-		for (Map<Integer,Fluxo> para : grafo.values()) {
+		for (SortedMap<Integer, Fluxo> para : grafo.values()) {
 			for (Fluxo fluxo : para.values()) {
 				System.out.println(fluxo.toString());
 			}

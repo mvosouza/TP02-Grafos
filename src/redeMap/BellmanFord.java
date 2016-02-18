@@ -50,9 +50,9 @@ public class BellmanFord {
 			}
 		}
 		
-		/*for (int i = 0; i < rot.length; i++) {
-			System.err.println("rot["+i+"] = "+rot[i]);
-		}*/
+		for (int i = 0; i < rot.length; i++) {
+			System.out.println("rot["+i+"] = "+rot[i]);
+		}
 		return true;
 	}
 }
