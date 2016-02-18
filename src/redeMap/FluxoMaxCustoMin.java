@@ -9,13 +9,13 @@ public class FluxoMaxCustoMin {
 	private Grafo g;
 	private SortedMap<Integer,SortedMap<Integer,Fluxo>> gResidual;
 	private Integer custo;
-	private Integer[] dt;
+	private long[] dt;
 	private Integer[] rot;
 	
 	BellmanFord bellman = new BellmanFord();
 	
 	
-	public FluxoMaxCustoMin(Grafo g, Integer[] dt, Integer[] rot) {
+	public FluxoMaxCustoMin(Grafo g, long[] dt, Integer[] rot) {
 		super();
 		this.g = g;
 		this.custo = 0;
@@ -36,10 +36,10 @@ public class FluxoMaxCustoMin {
 	public void setgResidual(Grafo gResidual) {
 		this.g = gResidual;
 	}
-	public Integer[] getDt() {
+	public long[] getDt() {
 		return dt;
 	}
-	public void setDt(Integer[] dt) {
+	public void setDt(long[] dt) {
 		this.dt = dt;
 	}
 	public Integer[] getRot() {
@@ -64,9 +64,10 @@ public class FluxoMaxCustoMin {
 						}
 						//Arco Reverso
 						if(gResidual.get(i).get(j).getFluxo() > gResidual.get(i).get(j).getFluxoMin() ){
-							SortedMap<Integer, Fluxo> aux = new TreeMap<>();
-							aux.put(i, new Fluxo(j,i,gResidual.get(i).get(j).getFluxoMin(), gResidual.get(i).get(j).getFluxo(), gResidual.get(i).get(j).getCusto(), 0));
-							novoResidual.put(j,aux);
+							if(novoResidual.get(j) == null)
+								novoResidual.put(j,new TreeMap<>()); 
+							novoResidual.get(j).put(i, new Fluxo(j,i,gResidual.get(i).get(j).getFluxoMin(), gResidual.get(i).get(j).getFluxo(), gResidual.get(i).get(j).getCusto(), 0));
+							
 						}
 						
 						/*if(gResidual.get(i).get(j).getFluxo() == gResidual.get(i).get(j).getFluxoMax() ){
@@ -85,17 +86,17 @@ public class FluxoMaxCustoMin {
 		
 		int i = g.getNumVertices()-1;
 		while(i > 0){
-			if(min > g.getGrafo().get(rot[i]).get(i).getFluxoMax()){
-				min = g.getGrafo().get(rot[i]).get(i).getFluxoMax();
+			if(min > gResidual.get(rot[i]).get(i).getFluxoMax()){
+				min = gResidual.get(rot[i]).get(i).getFluxoMax();
 			}
 			i = rot[i];
 		}
 		
 		i = g.getNumVertices()-1;
 		while(i > 0){
-			int fAnterior = g.getGrafo().get(rot[i]).get(i).getFluxo();
-			g.getGrafo().get(rot[i]).get(i).setFluxo(g.getGrafo().get(rot[i]).get(i).getFluxo() + min);
-			custo += (g.getGrafo().get(rot[i]).get(i).getFluxo() -fAnterior)* g.getGrafo().get(rot[i]).get(i).getCusto();
+			int fAnterior = gResidual.get(rot[i]).get(i).getFluxo();
+			gResidual.get(rot[i]).get(i).setFluxo(gResidual.get(rot[i]).get(i).getFluxo() + min);
+			custo += (gResidual.get(rot[i]).get(i).getFluxo() -fAnterior)* gResidual.get(rot[i]).get(i).getCusto();
 			i = rot[i];
 		}
 	}
@@ -103,9 +104,8 @@ public class FluxoMaxCustoMin {
 	public void fluxoMaximoFordFulkerson(){
 		while (bellman.menorCaminho(g.getNumVertices(), dt, rot, gResidual)) {
 			
-		
-			
 			aumentarFluxo();
+			System.err.println("Custo parcial - "+custo);
 			gerarRedeResidual();
 			
 			System.err.println("------------Novo Residual------------------");
