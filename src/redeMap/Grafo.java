@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -16,12 +17,12 @@ public class Grafo {
 	private Integer numArcos = 0;
 	private Integer numVertices = 0;
 	private SortedMap<Integer,SortedMap<Integer,Fluxo>> grafo; 
-	private PriorityQueue<Vertice> verticesDemanda;
+	private LinkedList<Vertice> verticesDemanda;
 	
 	Grafo(String nome){
 		this.nome = nome;
 		this.grafo = new TreeMap<>();
-		verticesDemanda = new PriorityQueue();
+		verticesDemanda = new LinkedList<>();
 	}
 	
 	public String getNome() {
@@ -48,13 +49,7 @@ public class Grafo {
 	public void setGrafo(SortedMap<Integer, SortedMap<Integer, Fluxo>> grafo) {
 		this.grafo = grafo;
 	}
-	public PriorityQueue<Vertice> getVerticesDemanda() {
-		return verticesDemanda;
-	}
-	public void setVerticesDemanda(PriorityQueue<Vertice> verticesDemanda) {
-		this.verticesDemanda = verticesDemanda;
-	}
-
+	
 	public void criarGrafo(){
 		
 		FileReader file;
@@ -79,20 +74,14 @@ public class Grafo {
 					break;
 					
 				case "n":
-					if (Integer.parseInt(vet[2]) > 0) {
-						grafo.get(0).put(Integer.parseInt(vet[1]), new Fluxo(0,Integer.parseInt(vet[1]),0,Integer.parseInt(vet[2]),0, 0));
-					}
-					else{
-						verticesDemanda.add(new Vertice(Integer.parseInt(vet[1]), Integer.parseInt(vet[2])));
-					}
+					verticesDemanda.add(new Vertice(Integer.parseInt(vet[1]), Integer.parseInt(vet[2])));
 					break;
 					
 				case "p":
-					numVertices = Integer.parseInt(vet[2])+1;
+					numVertices = Integer.parseInt(vet[2])+2;
 					numArcos = Integer.parseInt(vet[3]);
 					
 					grafo.put(0, new TreeMap<>());
-					grafo.put(numVertices, new TreeMap<>());
 					break;
 					
 				case "c":
@@ -107,15 +96,19 @@ public class Grafo {
 			e.printStackTrace();
 		}
 		
-		/*while (!verticesDemanda.isEmpty()) {
-			Vertice v = verticesDemanda.remove();
-			System.err.println(v.getId());
-			grafo.get(v.getId()).put(numVertices, new Fluxo(v.getId(),numVertices,0,Math.abs(v.getDemOuOferta()),0, 0));
-			System.err.println("Entrei");
-		}*/
+		while (!verticesDemanda.isEmpty()) {
+			Vertice v = verticesDemanda.removeFirst();
+			if (v.getDemOuOferta() > 0) {
+				grafo.get(0).put(v.getId(), new Fluxo(0,v.getId(),0,v.getDemOuOferta(),0, 0));
+			}
+			else{
+				if(grafo.get(v.getId()) == null)
+					grafo.put(v.getId(), new TreeMap<>());
+				grafo.get(v.getId()).put(numVertices-1, new Fluxo(v.getId(),numVertices-1,0,Math.abs(v.getDemOuOferta()),0, 0));
+			}
+		}
 		
 		for (Map<Integer,Fluxo> para : grafo.values()) {
-			System.err.println("-----");
 			for (Fluxo fluxo : para.values()) {
 				System.out.println(fluxo.toString());
 			}

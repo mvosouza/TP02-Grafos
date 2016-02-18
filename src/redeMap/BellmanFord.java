@@ -19,8 +19,12 @@ public class BellmanFord {
 			}
 			else{
 				rot[i] = -1;
-				dt[i] = Integer.MAX_VALUE;
+				dt[i] = Math.abs(Integer.MAX_VALUE);
 			}
+		}
+		System.err.println("Anterior");
+		for (int i = 0; i < rot.length; i++) {
+			System.err.println("rot["+i+"] = "+rot[i]+"- dt["+"] = "+dt[i]);
 		}
 		if (cont == 0) {
 			return false;
@@ -28,13 +32,16 @@ public class BellmanFord {
 		
 		for (int k = 0; k < n-1; k++) {
 			altera = false;
-			for (int i = 2; i < n; i++) {
-				for (int j = 1; j < n; j++) {
+			System.err.println("k - "+k);
+			for (int i = 2; i <= n; i++) {
+				for (int j = 1; j <= n; j++) {
 					if(grafo.get(j) != null)
 						if(grafo.get(j).get(i) != null){
-							if (dt[i] > dt[j]+grafo.get(j).get(i).getCusto()){
+							System.err.println("i = "+i+"----- j - dt["+j+"] = "+dt[j]);
+							if (dt[i] > dt[j]+grafo.get(j).get(i).getCusto() ){
 								dt[i] = dt[j]+grafo.get(j).get(i).getCusto();
 								rot[i] = j;
+								System.err.println("rot["+i+"] = "+rot[i]+"- dt["+"] = "+dt[i]);
 								altera = true;
 							}
 					}
@@ -43,6 +50,10 @@ public class BellmanFord {
 			if(altera == false){
 				k = n;
 			}
+		}
+		
+		for (int i = 0; i < rot.length; i++) {
+			System.err.println("rot["+i+"] = "+rot[i]);
 		}
 		return true;
 	}

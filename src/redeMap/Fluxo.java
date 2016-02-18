@@ -19,6 +19,16 @@ public class Fluxo {
 		this.fluxo = fluxo;
 	}
 	
+	public Fluxo(Fluxo f) {
+		super();
+		this.origem = f.getOrigem();
+		this.destino = f.getDestino();
+		this.fluxoMin = f.getFluxoMin();
+		this.fluxoMax = f.getFluxoMax();
+		this.custo = f.getCusto();
+		this.fluxo = f.getFluxo();
+	}
+	
 	public int getOrigem() {
 		return origem;
 	}
