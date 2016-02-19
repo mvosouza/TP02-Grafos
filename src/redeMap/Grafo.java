@@ -104,9 +104,25 @@ public class Grafo {
 			}
 		}
 		
+		//imprimeTodosArcos();
+		
+	}
+	
+	public void imprimeTodosArcos(){
 		for (SortedMap<Integer, Fluxo> para : grafo.values()) {
 			for (Fluxo fluxo : para.values()) {
 				System.out.println(fluxo.toString());
+			}
+		}
+	}
+	
+	public void imprimeFluxos(){
+		System.err.println("Arcos");
+		for (SortedMap<Integer, Fluxo> mapArcos : grafo.values()) {
+			for (Fluxo f : mapArcos.values()) {
+				if(f.getOrigem() != 0 && f.getDestino() != numVertices-1)
+					if(f.getFluxo() > 0)
+						System.err.println("("+f.getOrigem()+","+f.getDestino()+") - Fluxo: "+f.getFluxo());
 			}
 		}
 	}
