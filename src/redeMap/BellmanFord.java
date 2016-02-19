@@ -4,12 +4,12 @@ import java.util.SortedMap;
 
 public class BellmanFord {
 	
-	public boolean menorCaminho(int n, long[] dt, Integer[] rot, SortedMap<Integer,SortedMap<Integer,Fluxo>> grafo){
+	public boolean menorCaminho(int n, long[] dt, Integer[] rot, SortedMap<Integer,SortedMap<Integer,Arco>> grafo){
 		boolean altera = false;
 		int cont = 0;
 		
 		dt[0] = 0;
-		rot[0] = 0;
+		rot[0] = -1;
 		
 		for (int i = 1; i < n; i++) {
 			if (grafo.get(0) != null)
@@ -30,16 +30,13 @@ public class BellmanFord {
 		
 		for (int k = 0; k < n-1; k++) {
 			altera = false;
-			//System.err.println("k - "+k);
 			for (int i = 1; i < n; i++) {
 				for (int j = 1; j < n; j++) {
-					if(grafo.get(j) != null)
-						if(grafo.get(j).get(i) != null){
-							//System.err.println("i = "+i+"----- j - dt["+j+"] = "+dt[j]);
-							if (dt[i] > dt[j]+grafo.get(j).get(i).getCusto() ){
-								dt[i] = dt[j]+grafo.get(j).get(i).getCusto();
-								rot[i] = j;
-								//System.err.println("rot["+i+"] = "+rot[i]+"- dt["+"] = "+dt[i]);
+					if(grafo.get(i) != null)
+						if(grafo.get(i).get(j) != null){
+							if (dt[j] > dt[i]+grafo.get(i).get(j).getCusto() ){
+								dt[j] = dt[i]+grafo.get(i).get(j).getCusto();
+								rot[j] = i;
 								altera = true;
 							}
 					}

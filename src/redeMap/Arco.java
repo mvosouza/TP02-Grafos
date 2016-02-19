@@ -1,15 +1,15 @@
 package redeMap;
 
-public class Fluxo {
+public class Arco {
 	private int origem;
 	private int destino;
 	private int fluxoMin;
-	private int fluxoMax;
+	private long fluxoMax;
 	private int custo;
-	private int fluxo;
+	private long fluxo;
 	
 	
-	public Fluxo(int origem, int destino, int fluxoMin, int fluxoMax, int custo, int fluxo) {
+	public Arco(int origem, int destino, int fluxoMin, int fluxoMax, int custo, int fluxo) {
 		super();
 		this.origem = origem;
 		this.destino = destino;
@@ -19,16 +19,16 @@ public class Fluxo {
 		this.fluxo = fluxo;
 	}
 	
-	public Fluxo(Fluxo f) {
+	public Arco(int origem, int destino, int fluxoMin2, long fluxoMax2, int custo2, long fluxo2) {
 		super();
-		this.origem = f.getOrigem();
-		this.destino = f.getDestino();
-		this.fluxoMin = f.getFluxoMin();
-		this.fluxoMax = f.getFluxoMax();
-		this.custo = f.getCusto();
-		this.fluxo = f.getFluxo();
+		this.origem = origem;
+		this.destino = destino;
+		this.fluxoMin = fluxoMin2;
+		this.fluxoMax = fluxoMax2;
+		this.custo = custo2;
+		this.fluxo = fluxo2;
 	}
-	
+
 	public int getOrigem() {
 		return origem;
 	}
@@ -47,10 +47,10 @@ public class Fluxo {
 	public void setFluxoMin(int fluxoMin) {
 		this.fluxoMin = fluxoMin;
 	}
-	public int getFluxoMax() {
+	public long getFluxoMax() {
 		return fluxoMax;
 	}
-	public void setFluxoMax(int fluxoMax) {
+	public void setFluxoMax(long fluxoMax) {
 		this.fluxoMax = fluxoMax;
 	}
 	public int getCusto() {
@@ -59,10 +59,10 @@ public class Fluxo {
 	public void setCusto(int custo) {
 		this.custo = custo;
 	}
-	public int getFluxo() {
+	public long getFluxo() {
 		return fluxo;
 	}
-	public void setFluxo(int fluxo) {
+	public void setFluxo(long fluxo) {
 		this.fluxo = fluxo;
 	}
 

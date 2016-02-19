@@ -1,5 +1,7 @@
 package redeMap;
 
+import java.math.BigDecimal;
+
 public class Main {
 	
 	public static void main(String[] args) {
@@ -15,9 +17,11 @@ public class Main {
 		long tempoInicio = System.currentTimeMillis();
 		
 		FluxoMaxCustoMin fMcM = new FluxoMaxCustoMin(g, dt, rot);
-		fMcM.fluxoMaximoFordFulkerson();
+		fMcM.executar();
 		
 		System.err.println("Tempo Total: "+(System.currentTimeMillis()-tempoInicio)+" ms");
+		g.imprimeCustoTotal();
+		g.imprimeFluxos();
 	}
 	
 }

@@ -6,7 +6,7 @@ import java.util.TreeMap;
 public class FluxoMaxCustoMin {
 	
 	private Grafo g;
-	private SortedMap<Integer,SortedMap<Integer,Fluxo>> gResidual;
+	private SortedMap<Integer,SortedMap<Integer,Arco>> gResidual;
 	private long[] dt;
 	private Integer[] rot;
 	
@@ -17,14 +17,11 @@ public class FluxoMaxCustoMin {
 		this.g = g;
 		this.gResidual = new TreeMap<>();
 		
-		for (int i = 0; i < g.getNumVertices(); i++) {
-			for (int j = 0; j < g.getNumVertices(); j++) {
-				if(g.getGrafo().get(i)!=null)
-					if(g.getGrafo().get(i).get(j) != null){
-						if(gResidual.get(i) == null)
-							gResidual.put(i,new TreeMap<>());
-						gResidual.get(i).put(j, new Fluxo(i,j,g.getGrafo().get(i).get(j).getFluxoMin(),g.getGrafo().get(i).get(j).getFluxoMax(), g.getGrafo().get(i).get(j).getCusto(), g.getGrafo().get(i).get(j).getFluxo()));
-					}
+		for (SortedMap<Integer, Arco> mapArcos : g.getGrafo().values()) {
+			for (Arco f : mapArcos.values()) {
+				if(gResidual.get(f.getOrigem()) == null)
+					gResidual.put(f.getOrigem(),new TreeMap<>());
+				gResidual.get(f.getOrigem()).put(f.getDestino(), new Arco(f.getOrigem(),f.getDestino(),f.getFluxoMin(),f.getFluxoMax(), f.getCusto(), f.getFluxo()));
 			}
 		}
 				
@@ -52,33 +49,49 @@ public class FluxoMaxCustoMin {
 	}
 	
 	public void gerarRedeResidual(){
-		SortedMap<Integer,SortedMap<Integer,Fluxo>> novoResidual = new TreeMap<>();
+		SortedMap<Integer,SortedMap<Integer,Arco>> novoResidual = new TreeMap<>();
 		
-		for (int i = 0; i < g.getNumVertices(); i++) {
-			for (int j = 0; j < g.getNumVertices(); j++) {
-				if(gResidual.get(i)!=null)
-					if(gResidual.get(i).get(j) != null){
-						//Arco Direto
-						if(gResidual.get(i).get(j).getFluxo() < gResidual.get(i).get(j).getFluxoMax() ){
-							if(novoResidual.get(i) == null)
-								novoResidual.put(i,new TreeMap<>());
-							novoResidual.get(i).put(j, new Fluxo(i,j,gResidual.get(i).get(j).getFluxoMin(),gResidual.get(i).get(j).getFluxoMax() - gResidual.get(i).get(j).getFluxo(), gResidual.get(i).get(j).getCusto(), 0));
-						}
-						//Arco Reverso
-						if(gResidual.get(i).get(j).getFluxo() > gResidual.get(i).get(j).getFluxoMin() ){
-							if(novoResidual.get(j) == null)
-								novoResidual.put(j,new TreeMap<>()); 
-							novoResidual.get(j).put(i, new Fluxo(j,i,gResidual.get(i).get(j).getFluxoMin(), gResidual.get(i).get(j).getFluxo(), gResidual.get(i).get(j).getCusto(), 0));
-							
-						}
-					}
+		for (SortedMap<Integer, Arco> mapArcos : gResidual.values()) {
+			for (Arco f : mapArcos.values()) {
+				if(f.getFluxo() < f.getFluxoMax()){
+					if(novoResidual.get(f.getOrigem()) == null)
+						novoResidual.put(f.getOrigem(),new TreeMap<>());
+					novoResidual.get(f.getOrigem()).put(f.getDestino(), new Arco(f.getOrigem(),f.getDestino(),f.getFluxoMin(),f.getFluxoMax() - f.getFluxo(), f.getCusto(), 0));
+				}
+				if(f.getFluxo() > f.getFluxoMin()){
+					if(novoResidual.get(f.getDestino()) == null)
+						novoResidual.put(f.getDestino(),new TreeMap<>());
+					novoResidual.get(f.getDestino()).put(f.getOrigem(), new Arco(f.getDestino(),f.getOrigem(),f.getFluxoMin(), f.getFluxo(), f.getCusto(), 0));
+				}
 			}
 		}
+		
 		gResidual = novoResidual;
 	}
 	
+	public long aumentarFluxoAux(int n, long min){
+		int proximo = rot[n];
+		if(proximo != -1){
+			if(min > gResidual.get(proximo).get(n).getFluxoMax()){
+				min = gResidual.get(proximo).get(n).getFluxoMax();
+			}
+			min = aumentarFluxoAux(proximo, min);
+			
+			gResidual.get(proximo).get(n).setFluxo(gResidual.get(proximo).get(n).getFluxo() + min);
+			g.getGrafo().get(proximo).get(n).setFluxo(g.getGrafo().get(proximo).get(n).getFluxo()+gResidual.get(proximo).get(n).getFluxo());
+			
+			return min;
+		}
+		else
+			return min;
+	}
+	
+	public void aumentarFluxo2() {
+		aumentarFluxoAux(g.getNumVertices()-1, Long.MAX_VALUE);
+	}
+	
 	public void aumentarFluxo(){
-		int min = Integer.MAX_VALUE;
+		long min = Integer.MAX_VALUE;
 		
 		int i = g.getNumVertices()-1;
 		while(i > 0){
@@ -99,20 +112,21 @@ public class FluxoMaxCustoMin {
 		}
 		System.err.println(":-] --- "+min+" Unidades de Fluxo aumentado nesse caminho.");
 	}
+
 	
-	public void fluxoMaximoFordFulkerson(){
-		System.err.println("!!!!Caminho está inverso!!!!");
+	public void executar(){
 		while (bellman.menorCaminho(g.getNumVertices(), dt, rot, gResidual)) {
-			aumentarFluxo();
+			aumentarFluxo2();
 			gerarRedeResidual();
 			/*System.out.println("------------Novo Residual------------------");
-			for (SortedMap<Integer, Fluxo> para : gResidual.values()) {
-				for (Fluxo fluxo : para.values()) {
+			for (SortedMap<Integer, Arco> para : gResidual.values()) {
+				for (Arco fluxo : para.values()) {
 					System.out.println(fluxo.toString());
 				}
 			}*/
 		}
-		g.imprimeFluxosCustoTotal();
+		
+		
 	}
 	
 }
