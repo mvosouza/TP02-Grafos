@@ -16,7 +16,7 @@ public class Main {
 		FluxoMaxCustoMin fMcM = new FluxoMaxCustoMin(g, dt, rot);
 		fMcM.fluxoMaximoFordFulkerson();
 		
-		System.out.println("Tempo Total: "+(System.currentTimeMillis()-tempoInicio)+" ms");
+		System.err.println("Tempo Total: "+(System.currentTimeMillis()-tempoInicio)+" ms");
 	}
 
 }
