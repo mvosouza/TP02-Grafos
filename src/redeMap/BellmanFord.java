@@ -31,8 +31,8 @@ public class BellmanFord {
 		for (int k = 0; k < n-1; k++) {
 			altera = false;
 			//System.err.println("k - "+k);
-			for (int i = 1; i <= n; i++) {
-				for (int j = 1; j <= n; j++) {
+			for (int i = 1; i < n; i++) {
+				for (int j = 1; j < n; j++) {
 					if(grafo.get(j) != null)
 						if(grafo.get(j).get(i) != null){
 							//System.err.println("i = "+i+"----- j - dt["+j+"] = "+dt[j]);

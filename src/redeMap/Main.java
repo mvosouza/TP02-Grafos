@@ -11,6 +11,7 @@ public class Main {
 		/*for (int i = 0; i < rot.length; i++) {
 			System.err.println("Rot["+i+"] = "+rot[i]);
 		}*/
+		
 		long tempoInicio = System.currentTimeMillis();
 		
 		FluxoMaxCustoMin fMcM = new FluxoMaxCustoMin(g, dt, rot);
@@ -18,5 +19,5 @@ public class Main {
 		
 		System.err.println("Tempo Total: "+(System.currentTimeMillis()-tempoInicio)+" ms");
 	}
-
+	
 }

@@ -116,14 +116,18 @@ public class Grafo {
 		}
 	}
 	
-	public void imprimeFluxos(){
-		System.err.println("Arcos");
+	public void imprimeFluxosCustoTotal(){
+		double c = 0;
+		System.err.println("\nArcos");
 		for (SortedMap<Integer, Fluxo> mapArcos : grafo.values()) {
 			for (Fluxo f : mapArcos.values()) {
 				if(f.getOrigem() != 0 && f.getDestino() != numVertices-1)
-					if(f.getFluxo() > 0)
-						System.err.println("("+f.getOrigem()+","+f.getDestino()+") - Fluxo: "+f.getFluxo());
+					if(f.getFluxo() > 0){
+						c += (f.getFluxo() * f.getCusto());
+						System.err.println("("+f.getOrigem()+","+f.getDestino()+") - Fluxo: "+f.getFluxo()+" - Custo: "+f.getCusto()+" --- Custo parcial  da Arestas: "+(f.getFluxo() * f.getCusto()));
+					}
 			}
 		}
+		System.err.println("Custo total Arestas: "+c);
 	}
 }

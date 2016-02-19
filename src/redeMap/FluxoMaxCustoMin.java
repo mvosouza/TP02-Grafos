@@ -7,7 +7,6 @@ public class FluxoMaxCustoMin {
 	
 	private Grafo g;
 	private SortedMap<Integer,SortedMap<Integer,Fluxo>> gResidual;
-	private double custo;
 	private long[] dt;
 	private Integer[] rot;
 	
@@ -16,7 +15,6 @@ public class FluxoMaxCustoMin {
 	public FluxoMaxCustoMin(Grafo g, long[] dt, Integer[] rot) {
 		super();
 		this.g = g;
-		this.setCusto(0);
 		this.gResidual = new TreeMap<>();
 		
 		for (int i = 0; i < g.getNumVertices(); i++) {
@@ -40,14 +38,6 @@ public class FluxoMaxCustoMin {
 	public void setgResidual(Grafo gResidual) {
 		this.g = gResidual;
 	}
-	public double getCusto() {
-		return custo;
-	}
-
-	public void setCusto(double custo) {
-		this.custo = custo;
-	}
-
 	public long[] getDt() {
 		return dt;
 	}
@@ -99,20 +89,22 @@ public class FluxoMaxCustoMin {
 		}
 		
 		i = g.getNumVertices()-1;
+		System.err.print("[-");
 		while(i > 0){
 			gResidual.get(rot[i]).get(i).setFluxo(gResidual.get(rot[i]).get(i).getFluxo() + min);
 			g.getGrafo().get(rot[i]).get(i).setFluxo(g.getGrafo().get(rot[i]).get(i).getFluxo()+gResidual.get(rot[i]).get(i).getFluxo());
-			setCusto(getCusto() + (double)((gResidual.get(rot[i]).get(i).getFluxo())* gResidual.get(rot[i]).get(i).getCusto()));
 			i = rot[i];
+			if( i != 0)
+				System.err.print(":"+i);
 		}
+		System.err.println(":-] --- "+min+" Unidades de Fluxo aumentado nesse caminho.");
 	}
 	
 	public void fluxoMaximoFordFulkerson(){
+		System.err.println("!!!!Caminho está inverso!!!!");
 		while (bellman.menorCaminho(g.getNumVertices(), dt, rot, gResidual)) {
-			
 			aumentarFluxo();
 			gerarRedeResidual();
-			System.out.println("Custo Parcial = "+custo);
 			/*System.out.println("------------Novo Residual------------------");
 			for (SortedMap<Integer, Fluxo> para : gResidual.values()) {
 				for (Fluxo fluxo : para.values()) {
@@ -120,8 +112,7 @@ public class FluxoMaxCustoMin {
 				}
 			}*/
 		}
-		System.err.println("Custo Total = "+custo);
-		g.imprimeFluxos();
+		g.imprimeFluxosCustoTotal();
 	}
 	
 }
