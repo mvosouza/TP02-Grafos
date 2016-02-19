@@ -2,6 +2,7 @@ package redeMap;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -117,17 +118,18 @@ public class Grafo {
 	}
 	
 	public void imprimeFluxosCustoTotal(){
-		double c = 0;
+		BigDecimal custo = new BigDecimal(1.0);
 		System.err.println("\nArcos");
 		for (SortedMap<Integer, Fluxo> mapArcos : grafo.values()) {
 			for (Fluxo f : mapArcos.values()) {
 				if(f.getOrigem() != 0 && f.getDestino() != numVertices-1)
 					if(f.getFluxo() > 0){
-						c += (f.getFluxo() * f.getCusto());
-						System.err.println("("+f.getOrigem()+","+f.getDestino()+") - Fluxo: "+f.getFluxo()+" - Custo: "+f.getCusto()+" --- Custo parcial  da Arestas: "+(f.getFluxo() * f.getCusto()));
+						BigDecimal aux = new BigDecimal(f.getFluxo()).multiply(new BigDecimal(f.getCusto()));
+						custo = custo.add(aux);
+						System.err.println("("+f.getOrigem()+","+f.getDestino()+") - Fluxo: "+f.getFluxo());
 					}
 			}
 		}
-		System.err.println("Custo total Arestas: "+c);
+		System.err.println("Custo total Arestas: "+custo.toString());
 	}
 }
