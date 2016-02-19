@@ -7,7 +7,7 @@ public class FluxoMaxCustoMin {
 	
 	private Grafo g;
 	private SortedMap<Integer,SortedMap<Integer,Fluxo>> gResidual;
-	private long custo;
+	private double custo;
 	private long[] dt;
 	private Integer[] rot;
 	
@@ -16,7 +16,7 @@ public class FluxoMaxCustoMin {
 	public FluxoMaxCustoMin(Grafo g, long[] dt, Integer[] rot) {
 		super();
 		this.g = g;
-		this.custo = 0;
+		this.setCusto(0);
 		this.gResidual = new TreeMap<>();
 		
 		for (int i = 0; i < g.getNumVertices(); i++) {
@@ -40,6 +40,14 @@ public class FluxoMaxCustoMin {
 	public void setgResidual(Grafo gResidual) {
 		this.g = gResidual;
 	}
+	public double getCusto() {
+		return custo;
+	}
+
+	public void setCusto(double custo) {
+		this.custo = custo;
+	}
+
 	public long[] getDt() {
 		return dt;
 	}
@@ -94,7 +102,7 @@ public class FluxoMaxCustoMin {
 		while(i > 0){
 			gResidual.get(rot[i]).get(i).setFluxo(gResidual.get(rot[i]).get(i).getFluxo() + min);
 			g.getGrafo().get(rot[i]).get(i).setFluxo(g.getGrafo().get(rot[i]).get(i).getFluxo()+gResidual.get(rot[i]).get(i).getFluxo());
-			custo += (gResidual.get(rot[i]).get(i).getFluxo())* gResidual.get(rot[i]).get(i).getCusto();
+			setCusto(getCusto() + (double)((gResidual.get(rot[i]).get(i).getFluxo())* gResidual.get(rot[i]).get(i).getCusto()));
 			i = rot[i];
 		}
 	}
@@ -104,14 +112,15 @@ public class FluxoMaxCustoMin {
 			
 			aumentarFluxo();
 			gerarRedeResidual();
-			/*System.out.println("Custo Parcial = "+custo);
-			System.out.println("------------Novo Residual------------------");*/
-			/*for (SortedMap<Integer, Fluxo> para : gResidual.values()) {
+			System.out.println("Custo Parcial = "+custo);
+			/*System.out.println("------------Novo Residual------------------");
+			for (SortedMap<Integer, Fluxo> para : gResidual.values()) {
 				for (Fluxo fluxo : para.values()) {
 					System.out.println(fluxo.toString());
 				}
 			}*/
 		}
+		System.err.println("Custo Total = "+custo);
 		g.imprimeFluxos();
 	}
 	
